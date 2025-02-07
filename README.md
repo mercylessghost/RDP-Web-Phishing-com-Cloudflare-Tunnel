@@ -59,14 +59,5 @@ examples/: Exemplos de configuração e uso.
 
 Este repositório foi criado para fins educativos e para simulações autorizadas em ambientes controlados. O uso indevido dessas técnicas é ilegal e pode resultar em sanções penais. Use com responsabilidade. Este repositório não possui qualquer vínculo ou incentivo ao uso malicioso das técnicas descritas. Seu propósito é exclusivamente voltado para estudo, pesquisa e conscientização.
 
-👨‍💻 Contribuições
 
-Contribuições são bem-vindas! Abra um pull request ou relate problemas na aba de issues.
 
-📞 Contato
-
-Para dúvidas ou sugestões, entre em contato:
-
-E-mail: seuemail@exemplo.com
-
-LinkedIn: Seu Perfil
