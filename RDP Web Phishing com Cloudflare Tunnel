@@ -1,0 +1,91 @@
+RDP Web Phishing com Cloudflare Tunnel
+
+📌 Objetivo
+Este documento serve como um guia detalhado para documentar no Git um projeto que simula um ataque de phishing utilizando **RDP Web** com **Cloudflare Tunnel**. O objetivo é educacional e para conscientização de segurança cibernética, demonstrando as etapas envolvidas em criar um ambiente de teste controlado.
+
+🚀 Funcionalidades do Repositório
+- Configuração de um ambiente RDP falso utilizando VM.
+- Exposição remota via Cloudflare Tunnel.
+- Captura de credenciais e análise de comportamento em ambientes simulados.
+- Estrutura de código e documentação acessível para aprendizado.
+
+📋 Documentação do Repositório
+
+1️⃣ Estrutura de Diretórios**
+- **`/docs`**: Documentação detalhada com tutoriais passo a passo.
+- **`/scripts`**: Scripts automatizados para configuração do ambiente.
+- **`/examples`**: Exemplos práticos de configuração e uso.
+- **`/logs`**: Logs gerados durante simulações.
+
+2️⃣ Passos para Configuração do Ambiente**
+Preparação da Máquina Virtual**
+1. Configure uma máquina virtual com Windows 10 ou superior.
+   
+   $ winget install -e --id Microsoft.Windows10
+   
+2. Ative o acesso remoto RDP:
+   powershell
+   PS> Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name 'fDenyTSConnections' -Value 0
+   PS> Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
+   
+3. Crie um usuário fictício:
+ powershell
+   PS> net user usuario_falso senha123 /add
+
+
+ **Instalação do FreeRDP-WebConnect**
+1. Baixe e instale o FreeRDP-WebConnect:
+   powershell
+   PS> wget https://github.com/FreeRDP/FreeRDP-WebConnect/releases/download/v1.1.0/WebConnect-1.1.0.zip -OutFile WebConnect.zip
+   PS> Expand-Archive -Path WebConnect.zip -DestinationPath C:\WebConnect
+   PS> cd C:\WebConnect
+   PS> .\install.bat
+  
+2. Configure o serviço para iniciar automaticamente:
+   powershell
+   PS> Set-Service -Name WebConnect -StartupType Automatic
+   
+**Configuração do Apache**
+1. Instale o Apache:
+  
+   $ winget install -e --id ApacheFriends.XAMPP
+  
+2. Configure o VirtualHost no arquivo `httpd-vhosts.conf`:
+   apache
+   <VirtualHost *:80>
+       ServerName rdp.seudominio.com
+       ProxyPass /ws ws://localhost:8000/ws
+       ProxyPassReverse /ws ws://localhost:8000/ws
+       DocumentRoot "C:/WebConnect/www"
+   </VirtualHost>
+ 
+3. Reinicie o Apache:
+ powershell
+   PS> httpd.exe -k restart
+
+**Configuração do Cloudflare Tunnel**
+1. Instale o Cloudflare Tunnel:
+   
+   $ winget install cloudflared
+   
+2. Autentique-se no Cloudflare e crie o túnel:
+  
+   $ cloudflared login
+   $ cloudflared tunnel create rdp-web
+   $ cloudflared tunnel route dns rdp-web rdp.seudominio.com
+   $ cloudflared tunnel --url http://localhost:80
+
+3️⃣ Testando o Ambiente**
+1. Gere um link para envio à vítima (por e-mail ou mensagem):
+   - https://rdp.seudominio.com
+2. Monitore as credenciais e comportamento no ambiente simulado:
+  powershell
+   PS> Get-EventLog -LogName Security | Where-Object {$_.EventID -eq 4624}
+ 
+3. Analise cookies de sessão e atividades:
+   - Utilize ferramentas como `Wireshark` ou `Burp Suite` para capturar tokens.
+
+## 🛡️ Aviso Legal
+Este repositório é para **fins educativos** e **simulações em ambientes autorizados**. O uso indevido dessas técnicas é ilegal e pode resultar em sanções legais. **Este conteúdo não incentiva ou promove atividades ilícitas.**
+
+
